@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main_head{
+  @apply bg-gradient-to-r place-items-center grid from-darkBg to-neonGreen h-[100px] lg:text-[60px] text-3xl bg-clip-text text-transparent font-bold font-sans;
+}

@@ -10,7 +10,12 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        neonGreen: "#d4ff00",
+        darkBg: "#0b1727"
       },
+      backgroundImage: {
+        bgImageOne : "url('/assets/Fractal_20Maze_20-_2060(4).jpg')"
+      }
     },
   },
   plugins: [],
