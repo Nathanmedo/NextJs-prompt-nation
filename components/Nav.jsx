@@ -1,32 +1,21 @@
 "use client"
 
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import Link from 'next/link';
 import { useState } from 'react'
 import Image from 'next/image';
 import { useSession, signIn, signOut, getProviders } from 'next-auth/react';
 
-const isUserSignedIn = true;
-let routes;
-
-if(isUserSignedIn){
-	routes = [
-		{ name: "Home", href: "/", isActive: true },
-		{ name: "Profile", href: "/profile", isActive: false },
-		{ name: "Features", href: "#", isActive: false },
-		{ name: "Create Post", href: "/CreatePost", isActive: false },
-	];
-}
 
 
-const NavMenu = ({ routes, providers}) => {
+const NavMenu = ({ routes, providers, session}) => {
 const [toggle, setToggle] = useState(false)
 
 
 	return(
 		<>
-			{ isUserSignedIn ?
+			{ session?.user ?
 				<ul
 				className="md:flex hidden justify-center items-center text-3xl gap-6 lg:text-base lg:gap-2 absolute h-screen w-screen top-0 left-full lg:left-0 lg:relative lg:h-auto lg:w-auto lg:bg-transparent"
 				id="navbar"
@@ -53,34 +42,34 @@ const [toggle, setToggle] = useState(false)
 					<Image
 					width={32}
 					height={32}
-					src='/assets/IMG_1087.JPG'
+					src={session.user.image}
 					alt='UserProfile'
-					className='object-contain rounded-full '
+					className='object-cover w-12 h-12 bg-blue-500 rounded-full'
 					/>
 				</Link>
 			</ul> :
-			<>
+			<Fragment>
 				{ providers && Object.values(providers).map((provider)=>(
 					<button
-					className='bg-white text-black py-2 w-[30px]'
+					className='bg-white md:flex hidden text-black py-2 w-[30px]'
 					key={provider.name}
 					onClick={()=>signIn(provider.id)}>
 						signIn
 					</button>
 				))}
-			</>
+			</Fragment>
 }
 		{/*mobile navigation */}
-		{isUserSignedIn ? 
+		{ session?.user ? 
 			(<div className='lg:hidden relative'>
 			<button
 			onClick={()=> setToggle(prev => !prev)}>
 				<Image
-				src='/assets/1.webp'
+				src={session.user.image}
 				width={42}
 				height={42}
 				alt='UserProfile'
-				className='rounded-full object-contain'
+				className='w-12 h-12 bg-blue-500 rounded-full object-cover'
 				/>
 				{toggle && 
 				<ul className='bg-white py-6 flex items-end gap-2 flex-col shadow-md rounded-sm absolute top-10 right-[30%] w-[200px]'>
@@ -111,11 +100,12 @@ const [toggle, setToggle] = useState(false)
 		(<>
 		{ providers && Object.values(providers).map((provider)=>(
 			<button
-			className='bg-white text-darkBg py-2 w-[30px]'
+			className='bg-white lg:hidden flex text-darkBg py-2 gap-1 items-center justify-center w-[100px]'
 			key={provider.name}
 			onClick={()=>{signIn(provider.id),
 				setToggle(false)
 			}}>
+				<span>{(provider.id).toLowerCase() == 'google' ? 'Google' : 'Github'}</span>
 				signIn
 			</button>
 		))}
@@ -130,34 +120,56 @@ NavMenu.propTypes = {
 };
 
 const Nav = () => {
-	const [ providers, setProviders] = useState(null)
-	
+	const [ providers, setProviders] = useState(null);
+
+
+	const { data: session } = useSession();
+	console.log(session);	
+
+
+let routes;
+
+
+if(session?.user){
+	routes = [
+		{ name: "Home", href: "/", isActive: true },
+		{ name: "Profile", href: "/profile", isActive: false },
+		{ name: "Features", href: "#", isActive: false },
+		{ name: "Create Prompt", href: "/create-prompt", isActive: false },
+	];
+}
+
+
 	useEffect(()=>{
 		async function fetchProviders(){
 			const response = await getProviders();
+			console.log(response);
 			
 			setProviders(response)
 		}
 
 		fetchProviders();
-	})
+	}, [session])
+
+	console.log(providers);
+	
 
 	return (
-		<div className="light py-6 bg-transparent absolute text-zinc-900 dark:text-white ">
+		<div className="light z-50 py-6 bg-transparent absolute top-0 text-zinc-900 dark:text-white ">
 			<nav>
 				<div className="container">
 					<div className="flex flex-row w-screen px-4 justify-between items-center">
 						<div className='Nav_logo flex items-center justify-between w-[220px]'>
 							<Link
-							className="block cursor-pointer h-10 z-20"
+							className="block cursor-pointer z-20"
 							href='/'
 						>
 							<Image
-							src="/assets/1.webp"
-							height={42}
+							src="/assets/cursor icon.webp"
 							alt='Prompt Nation Icon'
-							width={42}
-							className=' rounded-full object-contain'
+							width={25}
+							height={25}
+							className=' object-contain w-12 h-12 bg-blue-500 rounded-full'
 							/>
 						</Link>
 						<Link	className=" no-underline font-bold text-white hidden md:block text-2xl" href="/">
@@ -165,7 +177,7 @@ const Nav = () => {
 							Prompt Nation{" "}
 						</Link>
 						</div>
-						<NavMenu routes={routes} providers={providers}/>
+						<NavMenu routes={routes} providers={providers} session={session}/>
 					</div>
 				</div>
 			</nav>

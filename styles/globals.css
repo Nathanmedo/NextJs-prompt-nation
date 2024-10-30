@@ -5,3 +5,8 @@
 .main_head{
   @apply bg-gradient-to-r place-items-center grid from-darkBg to-neonGreen h-[100px] lg:text-[60px] text-3xl bg-clip-text text-transparent font-bold font-sans;
 }
+
+.description{
+  text-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  opacity: 120%;
+}
