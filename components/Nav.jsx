@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { useState } from 'react'
 import Image from 'next/image';
 import { useSession, signIn, signOut, getProviders } from 'next-auth/react';
+import { Montserrat} from 'next/font/google';
+import gsap from 'gsap';
+import { FaArrowRight} from 'react-icons/fa'
+
+
+const montserrat = Montserrat({
+	weight: ['500'],
+	subsets: ['cyrillic']
+})
 
 
 
@@ -13,6 +22,36 @@ const NavMenu = ({ routes, providers, session}) => {
 const [toggle, setToggle] = useState(false)
 
 
+	const handlePulse = () =>{
+		gsap.to('#signIn_button', {
+			scale: 1.1,
+			repeat: -1,
+			duration: .5,
+			yoyo: true,
+			yoyoEase: 'bounce.out',
+			ease: 'power1.inOut'
+		})
+	}
+
+	const handleStopPulse = () =>{
+		gsap.killTweensOf('#signIn_button');
+		gsap.to('#signIn_button', { scale: 1, duration: .2})
+	}
+	
+	const handleActive = (link) =>{
+		console.log('changing active target');
+		
+		//clear all active 
+		for(let i = 0; i<routes.length; i++){
+			routes[i].isActive = false;
+		};
+
+		//make link active 
+		routes[link].isActive = true;
+	}
+
+	console.log(toggle);
+	
 	return(
 		<>
 			{ session?.user ?
@@ -21,7 +60,10 @@ const [toggle, setToggle] = useState(false)
 				id="navbar"
 			>
 				{routes.map((route, i) => (
-					<li key={i}>
+					<li
+					onClick={()=>handleActive(i)} 
+					key={i}
+					>
 						<Link
 							className={`px-4 py-3 ${
 								route.isActive ? "opacity-100" : "opacity-50 hover:opacity-100"
@@ -33,6 +75,7 @@ const [toggle, setToggle] = useState(false)
 					</li>
 				))}
 				<button 
+				onClick={()=>signOut()}
 				className='rounded-sm py-2 hover:shadow-md w-[100px] hover:bg-white hover:text-black transition text-white bg-black'>
 					SignOut
 				</button>
@@ -49,18 +92,24 @@ const [toggle, setToggle] = useState(false)
 				</Link>
 			</ul> :
 			<Fragment>
-				{ providers && Object.values(providers).map((provider)=>(
-					<button
-					className='bg-white md:flex hidden text-black py-2 w-[30px]'
-					key={provider.name}
-					onClick={()=>signIn(provider.id)}>
-						signIn
-					</button>
-				))}
+				{ providers && 
+				<Link
+				id='signIn_button'
+				className={`bg-white ${montserrat.className} flex text-darkBg py-2 gap-1 items-center justify-center w-[100px]`}
+				onClick={()=>setToggle(false)}
+				onMouseEnter={handlePulse}
+				onMouseLeave={handleStopPulse}
+				href='/login'
+				>
+					signIn
+					<FaArrowRight className='text-[16px]'/>
+				</Link>
+			}
 			</Fragment>
 }
 		{/*mobile navigation */}
-		{ session?.user ? 
+
+		{ session?.user &&
 			(<div className='lg:hidden relative'>
 			<button
 			onClick={()=> setToggle(prev => !prev)}>
@@ -72,11 +121,13 @@ const [toggle, setToggle] = useState(false)
 				className='w-12 h-12 bg-blue-500 rounded-full object-cover'
 				/>
 				{toggle && 
-				<ul className='bg-white py-6 flex items-end gap-2 flex-col shadow-md rounded-sm absolute top-10 right-[30%] w-[200px]'>
+				<ul className='bg-white py-6 flex items-end gap-2 flex-col shadow-md rounded-sm absolute top-[100%] right-0 w-[200px]'>
 					{routes.map((route, i) => (
-					<li key={i} className=' text-darkBg'>
+					<li 
+					onClick={()=>handleActive(i)}
+					key={i} 
+					className='text-darkBg'>
 						<Link
-							onClick={()=> setToggle(false)}
 							className={`px-4 ${
 								route.isActive ? "opacity-100" : "opacity-50 hover:opacity-100"
 							}`}
@@ -86,32 +137,22 @@ const [toggle, setToggle] = useState(false)
 						</Link>
 					</li>
 				))}
-				<button 
-				onClick={()=>setToggle(false)}
+				<Link
+				href={'/login'}
+				onClick={()=>{setToggle(prev => !prev),
+					signOut()
+				}}
 				className='rounded-sm mx-4 py-3 w-[100px] border-2 flex justify-center items-center border-black hover:bg-white hover:border-black hover:text-black transition text-white bg-black'>
 				SignOut
-				</button>
+				</Link>
 				</ul>
 				}
 			</button>
 
 			
-		</div>):
-		(<>
-		{ providers && Object.values(providers).map((provider)=>(
-			<button
-			className='bg-white lg:hidden flex text-darkBg py-2 gap-1 items-center justify-center w-[100px]'
-			key={provider.name}
-			onClick={()=>{signIn(provider.id),
-				setToggle(false)
-			}}>
-				<span>{(provider.id).toLowerCase() == 'google' ? 'Google' : 'Github'}</span>
-				signIn
-			</button>
-		))}
-	</>)
-		}
-		</>
+		</div>)
+	}
+	</>
 	)
 };
 
@@ -155,11 +196,11 @@ if(session?.user){
 	
 
 	return (
-		<div className="light z-50 py-6 bg-transparent absolute top-0 text-zinc-900 dark:text-white ">
-			<nav>
+		<div className="light z-50 py-6 bg-black/30 backdrop-blur-md w-screen px-2 absolute top-0 text-zinc-900 dark:text-white">
+			<nav className='flex flex-row justify-between px-2 items-center'>
 				<div className="container">
-					<div className="flex flex-row w-screen px-4 justify-between items-center">
-						<div className='Nav_logo flex items-center justify-between w-[220px]'>
+					<div className="px-4 items-center">
+						<div className='Nav_logo flex items-center gap-2'>
 							<Link
 							className="block cursor-pointer z-20"
 							href='/'
@@ -177,8 +218,10 @@ if(session?.user){
 							Prompt Nation{" "}
 						</Link>
 						</div>
-						<NavMenu routes={routes} providers={providers} session={session}/>
 					</div>
+				</div>
+				<div className='flex flex-row items-center lg:w-[80%] w-[100px] '>
+					<NavMenu routes={routes} providers={providers} session={session}/>
 				</div>
 			</nav>
 		</div>

@@ -1,16 +1,23 @@
+'use client'
+
 import React, { useState, Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { signIn } from "next-auth/react";
 
 const SocialLoginButton = () => (
 	<Fragment>
-		<button className="bg-blue-600 text-white py-3 px-6 rounded w-full flex items-center justify-center mt-4">
-			<FontAwesomeIcon icon={faFacebook} className=" mr-2 text-white" />
-			<span className="text-center">Continue with Facebook</span>
-		</button>
-		<button className="bg-red-500 text-white py-3 px-6 rounded w-full flex items-center justify-center mt-4">
+		<button 
+		onClick={()=>signIn('google', {callbackUrl: '/'})}
+		className="bg-red-500 text-white py-3 px-6 rounded w-full flex items-center justify-center mt-4">
 			<FontAwesomeIcon icon={faGoogle} className=" mr-2 text-white" />
 			<span className="text-center">Continue with Google</span>
+		</button>
+		<button
+		onClick={()=>signIn('github', {callbackUrl: '/'})} 
+		className="bg-gray-800 text-white py-3 px-6 rounded w-full flex items-center justify-center mt-4">
+			<FontAwesomeIcon icon={faGithub} className=" mr-2 text-white" />
+			<span className="text-center">Continue with Github</span>
 		</button>
 	</Fragment>
 );
@@ -35,7 +42,7 @@ const SignInForm = () => {
 			<div className="mb-4">
 				<input
 					type="text"
-					className="w-full bg-blue-50 dark:bg-slate-700 min-h-[48px] leading-10 px-4 p-2 rounded-lg outline-none border border-transparent focus:border-blue-600"
+					className="w-full bg-blue-50 dark:bg-darkBg min-h-[48px] leading-10 px-4 p-2 rounded-lg outline-none border border-transparent focus:border-blue-600"
 					id="email"
 					placeholder="Email"
 				/>
@@ -43,7 +50,7 @@ const SignInForm = () => {
 			<div className="mb-4">
 				<input
 					type="password"
-					className="w-full bg-blue-50 dark:bg-slate-700 min-h-[48px] leading-10 px-4 p-2 rounded-lg outline-none border border-transparent focus:border-blue-600"
+					className="w-full bg-blue-50 dark:bg-darkBg min-h-[48px] leading-10 px-4 p-2 rounded-lg outline-none border border-transparent focus:border-blue-600"
 					id="password"
 					placeholder="Password"
 				/>
@@ -54,10 +61,10 @@ const SignInForm = () => {
 					Remember me
 				</label>
 			</div>
-			<button className="bg-indigo-900 text-white py-3 px-6 rounded w-full">
+			<button className="bg-slate-800 text-white py-3 px-6 rounded w-full">
 				Log In
 			</button>
-			<button className="hover:text-blue-600 py-2 px-4 rounded-lg w-full">
+			<button className="hover:text-emerald-500 py-2 px-4 rounded-lg w-full">
 				Forget your password?
 			</button>
 			<div className="relative">
@@ -75,7 +82,7 @@ const SignInForm = () => {
 const SignIn9 = () => {
 	const [active, setActive] = useState("signIn");
 	return (
-		<section className="ezy__signin9 light bg-white dark:bg-[#0b1727] text-zinc-900 dark:text-white overflow-hidden">
+		<section className="ezy__signin9 login light bg-white  text-zinc-900 dark:text-white overflow-hidden">
 			<div className="container px-4 mx-auto">
 				<div className="grid grid-cols-12 h-full">
 					<div className="col-span-12 lg:col-span-6 lg:col-start-7 order-2">
@@ -87,7 +94,7 @@ const SignIn9 = () => {
 							}}
 						></div>
 					</div>
-					<div className="col-span-12 lg:col-span-4 lg:col-start-2 py-14 lg:py-24 lg:pb-32">
+					<div className="col-span-12 lg:col-span-4 lg:col-start-2 py-32 lg:py-24 lg:pb-32">
 						<div className="flex items-center justify-center h-full">
 							<div className="w-full max-w-xl mx-auto">
 								<div className="text-center mb-6 lg:mb-12">
@@ -95,7 +102,7 @@ const SignIn9 = () => {
 										<button
 											className={`${
 												active === "signIn" &&
-												"bg-white dark:bg-slate-800 text-black dark:text-white rounded-xl"
+												"bg-white dark:bg-darkBg text-black dark:text-white rounded-xl"
 											} py-3 w-1/2 h-full opacity-60`}
 											onClick={() => setActive("signIn")}
 										>
@@ -104,7 +111,7 @@ const SignIn9 = () => {
 										<button
 											className={`${
 												active === "signUp" &&
-												"bg-white dark:bg-slate-800 text-black dark:text-white rounded-xl"
+												"bg-white dark:bg-darkBg text-black dark:text-white rounded-xl"
 											} py-3 w-1/2 h-full opacity-60`}
 											onClick={() => setActive("signUp")}
 										>
@@ -113,7 +120,7 @@ const SignIn9 = () => {
 									</div>
 								</div>
 								<h2 className="text-indigo-900 dark:text-white text-2xl font-bold mb-3 lg:mt-24">
-									Welcome to Easy Frontend
+									Welcome to Prompt Nation.
 								</h2>
 								<div className="flex items-center mb-6 md:mb-12">
 									<p className="mb-0 mr-2 opacity-50">Don't have an account?</p>
@@ -130,3 +137,4 @@ const SignIn9 = () => {
 	);
 };
 
+export default SignIn9;

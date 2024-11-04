@@ -7,7 +7,7 @@ let isDbConnected = false;
 const connectToDB = async () =>{
     mongoose.set('strictQuery', true);
 
-    if(!isDbConnected){
+    if(isDbConnected){
         try{
             await mongoose.connect(process.env.MONGODB_URI, {
                 dbName: 'shared_prompts',

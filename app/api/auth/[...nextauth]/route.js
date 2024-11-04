@@ -5,8 +5,6 @@ import connectToDB from "@utils/database";
 import User from "@models/userModel";
 
 
-
-
 const handler = NextAuth({
     providers: [
         GoogleProvider({
@@ -50,9 +48,9 @@ const handler = NextAuth({
             await User.create({
                 email: profile.email,
                 username: profile.name.replace(" ", "").toLowerCase(),
-                image: profile.picture
+                image: profile.picture,
             })
-        }
+        };
         return true;
     }
     
