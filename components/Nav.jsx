@@ -220,7 +220,7 @@ if(session?.user){
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-row items-center lg:w-[80%] w-[100px] '>
+				<div className='flex flex-row items-center '>
 					<NavMenu routes={routes} providers={providers} session={session}/>
 				</div>
 			</nav>

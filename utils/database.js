@@ -8,7 +8,10 @@ const connectToDB = async () =>{
     mongoose.set('strictQuery', true);
 
     if(isDbConnected){
-        try{
+        console.log('database is already connected!');
+        return;
+    }
+    try{
             await mongoose.connect(process.env.MONGODB_URI, {
                 dbName: 'shared_prompts',
                 useNewUrlParser:true,
@@ -21,7 +24,6 @@ const connectToDB = async () =>{
         }catch(error){
             console.log('failed to connect to database.');
             
-        }
     }
 }
 

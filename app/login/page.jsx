@@ -38,7 +38,7 @@ const SignInForm = () => {
 	};
 
 	return (
-		<form noValidate validated={validated} onSubmit={handleSubmit}>
+		<form noValidate validated={validated.toString()} onSubmit={handleSubmit}>
 			<div className="mb-4">
 				<input
 					type="text"
