@@ -1,15 +1,19 @@
 import Prompt from "@models/promptModel";
-import { connectToDB } from "@utils/database";
+import connectToDB from "@utils/database";
+import { NextResponse } from "next/server";
 
 
 export async function POST(request){
-    console.log(await request.json());
     
-    const { prompt, tag, creator } = await request.json()
+    const content = await request.json();
+    const { prompt, tag, creator } = content;
+    console.log(prompt, tag, creator);
+    
 
     try{
         await connectToDB();
-
+        console.log('creating new prompt...');
+        
         //create new prompt object from the promptModel
         const newPrompt = new Prompt({
             creator,
@@ -19,8 +23,8 @@ export async function POST(request){
         //save the new prompt to the database
         await newPrompt.save();
         //return the already saved prompt to the clientside 
-        return new Response(JSON.stringify(newPrompt), {status: 201});
+        return NextResponse.json(newPrompt, {status: 201});
     }catch(error){
-        return new Response('Failed to create new prompt', { status: 500 })
+        return NextResponse.json('Failed to create new prompt', { status: 500 })
     }
 }

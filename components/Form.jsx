@@ -8,7 +8,8 @@ const Form = ({
     setSubmit,
     promptPost,
     setPromptPost,
-    handleCreatePrompt
+    handleCreatePrompt,
+    fetchError
 }) => {
 
   return (
@@ -21,6 +22,7 @@ const Form = ({
       </p>
       <FormField
         type={type}
+        fetchError={fetchError}
         submit={submit}
         setSubmit={setSubmit}
         promptPost={promptPost}
@@ -35,7 +37,7 @@ const Form = ({
 
 const FormField = ({
   type,
-  error,
+  fetchError,
   submit,
   setSubmit,
   promptPost,
@@ -46,8 +48,7 @@ const FormField = ({
   let currentIndex = 0;
   useEffect(()=>{
     const promptField = document.getElementById('prompt_field');
-  console.log(promptField);
-  let promptInterval;
+    let promptInterval;
   const changePromptFieldPlaceholder = () =>{
     const placeholders = [
             "Write your prompt here",
@@ -59,7 +60,6 @@ const FormField = ({
   clearInterval(promptInterval)
 
   promptInterval = setInterval(()=>{
-    console.log('changing prompt');
     
     if(currentIndex === placeholders.length){
       currentIndex = 0;
@@ -73,11 +73,10 @@ const FormField = ({
   }, [promptPost])
 
 
-
   return (
     <form onSubmit={handleCreatePrompt}>
-      <p  className='font-bold my-5'>Your AI prompt</p>
-      {error && <p className={`text-red-500 text-sm capitalize`}>*{error}</p>}
+      <p  className='font-bold my-3'>Your AI prompt</p>
+      {fetchError && <p className={`text-red-500 text-sm capitalize my-2`}>*{fetchError}</p>}
       <textarea
         value={promptPost.prompt}
         id='prompt_field'

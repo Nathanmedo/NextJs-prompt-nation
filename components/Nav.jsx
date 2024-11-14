@@ -5,11 +5,13 @@ import React, { Fragment, useEffect } from 'react'
 import Link from 'next/link';
 import { useState } from 'react'
 import Image from 'next/image';
-import { useSession, signIn, signOut, getProviders } from 'next-auth/react';
+import { signOut, getProviders } from 'next-auth/react';
 import { Montserrat} from 'next/font/google';
 import gsap from 'gsap';
-import { FaArrowRight} from 'react-icons/fa'
-
+import { FaArrowRight} from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import SessionData from '@app/api/getSession/SessionData';
 
 const montserrat = Montserrat({
 	weight: ['500'],
@@ -18,8 +20,10 @@ const montserrat = Montserrat({
 
 
 
-const NavMenu = ({ routes, providers, session}) => {
-const [toggle, setToggle] = useState(false)
+
+const NavMenu = ({ routes, providers, session }) => {
+const [toggle, setToggle] = useState(false);
+const router = useRouter();
 
 
 	const handlePulse = () =>{
@@ -45,18 +49,38 @@ const [toggle, setToggle] = useState(false)
 		for(let i = 0; i<routes.length; i++){
 			routes[i].isActive = false;
 		};
-
+		console.log(routes); 
+		
 		//make link active 
 		routes[link].isActive = true;
 	}
 
 	console.log(toggle);
 	
+	const handleLogOut = async () =>{
+
+		const isProviderSession = session?.provider;
+		if(isProviderSession){
+			await signOut();
+			router.push('/login');
+		}else{
+			try{
+				await axios.get('/api/users/logout');
+
+				//clear any stored token 
+				Cookies.remove('token');
+				router.push('/login');
+			}catch(error){
+				console.log(error.message);
+			}
+		}
+	}
+
 	return(
 		<>
 			{ session?.user ?
 				<ul
-				className="md:flex hidden justify-center items-center text-3xl gap-6 lg:text-base lg:gap-2 absolute h-screen w-screen top-0 left-full lg:left-0 lg:relative lg:h-auto lg:w-auto lg:bg-transparent"
+				className="md:flex hidden justify-center items-center lg:text-base md:gap-2 top-0 left-full lg:left-0 lg:relative md:h-auto md:min-w-max lg:bg-transparent"
 				id="navbar"
 			>
 				{routes.map((route, i) => (
@@ -75,19 +99,19 @@ const [toggle, setToggle] = useState(false)
 					</li>
 				))}
 				<button 
-				onClick={()=>signOut()}
-				className='rounded-sm py-2 hover:shadow-md w-[100px] hover:bg-white hover:text-black transition text-white bg-black'>
+				onClick={handleLogOut}
+				className='rounded-sm py-2 px-4 hover:shadow-md w-[100px] hover:bg-white hover:text-black transition text-white bg-black'>
 					SignOut
 				</button>
 				<Link
 				className=' ' 
-				href='/profile'>
+				href='/my-profile'>
 					<Image
 					width={32}
 					height={32}
 					src={session.user.image}
 					alt='UserProfile'
-					className='object-cover w-12 h-12 bg-blue-500 rounded-full'
+					className='object-cover w-12 h-12 bg-gray-500 rounded-full'
 					/>
 				</Link>
 			</ul> :
@@ -110,15 +134,15 @@ const [toggle, setToggle] = useState(false)
 		{/*mobile navigation */}
 
 		{ session?.user &&
-			(<div className='lg:hidden relative'>
+			(<div className='md:hidden relative'>
 			<button
 			onClick={()=> setToggle(prev => !prev)}>
 				<Image
-				src={session.user.image}
+				src={session?.user.image}
 				width={42}
 				height={42}
 				alt='UserProfile'
-				className='w-12 h-12 bg-blue-500 rounded-full object-cover'
+				className='w-12 h-12 bg-gray-500 rounded-full object-cover'
 				/>
 				{toggle && 
 				<ul className='bg-white py-6 flex items-end gap-2 flex-col shadow-md rounded-sm absolute top-[100%] right-0 w-[200px]'>
@@ -140,7 +164,7 @@ const [toggle, setToggle] = useState(false)
 				<Link
 				href={'/login'}
 				onClick={()=>{setToggle(prev => !prev),
-					signOut()
+					handleLogOut()
 				}}
 				className='rounded-sm mx-4 py-3 w-[100px] border-2 flex justify-center items-center border-black hover:bg-white hover:border-black hover:text-black transition text-white bg-black'>
 				SignOut
@@ -161,25 +185,26 @@ NavMenu.propTypes = {
 };
 
 const Nav = () => {
-	const [ providers, setProviders] = useState(null);
+	const [providers, setProviders] = useState(null);
+	
+	const [scrollState, setScrollState]= useState({
+		scrollY: 0,
+		scrollX: 0
+	});
 
+	const session = SessionData();
+	
 
-	const { data: session } = useSession();
-	console.log(session);	
+	let routes;
 
-
-let routes;
-
-
-if(session?.user){
-	routes = [
-		{ name: "Home", href: "/", isActive: true },
-		{ name: "Profile", href: "/profile", isActive: false },
-		{ name: "Features", href: "#", isActive: false },
-		{ name: "Create Prompt", href: "/create-prompt", isActive: false },
-	];
-}
-
+	if(session?.user){
+		routes = [
+			{ name: "Home", href: "/", isActive: true },
+			{ name: "Profile", href: "/my-profile", isActive: false },
+			{ name: "Feed", href: "/prompts", isActive: false },
+			{ name: "Create Prompt", href: "/create-prompt", isActive: false },
+		];
+	}
 
 	useEffect(()=>{
 		async function fetchProviders(){
@@ -190,39 +215,43 @@ if(session?.user){
 		}
 
 		fetchProviders();
+
+		
 	}, [session])
 
 	console.log(providers);
-	
+
+	useEffect(()=>{
+		window.addEventListener('scroll', ()=>{
+			const scrollY = window.scrollY;
+			const scrollX = window.scrollX;
+
+			setScrollState({scrollX, scrollY})
+		})
+	}, [])
 
 	return (
-		<div className="light z-50 py-6 bg-black/30 backdrop-blur-md w-screen px-2 absolute top-0 text-zinc-900 dark:text-white">
-			<nav className='flex flex-row justify-between px-2 items-center'>
-				<div className="container">
-					<div className="px-4 items-center">
-						<div className='Nav_logo flex items-center gap-2'>
-							<Link
-							className="block cursor-pointer z-20"
-							href='/'
-						>
-							<Image
-							src="/assets/cursor icon.webp"
-							alt='Prompt Nation Icon'
-							width={25}
-							height={25}
-							className=' object-contain w-12 h-12 bg-blue-500 rounded-full'
-							/>
-						</Link>
-						<Link	className=" no-underline font-bold text-white hidden md:block text-2xl" href="/">
-							{" "}
-							Prompt Nation{" "}
-						</Link>
-						</div>
-					</div>
+		<div className="light z-50 py-6 bg-black/30 backdrop-blur-md w-screen px-2 fixed top-0 text-zinc-900 dark:text-white">
+			<nav className='flex flex-row justify-between px-4 items-center'>
+				<div className='Nav_logo flex items-center gap-2'>
+					<Link
+					className="block cursor-pointer z-20"
+					href='/'
+				>
+					<Image
+					src="/assets/cursor icon.webp"
+					alt='Prompt Nation Icon'
+					width={25}
+					height={25}
+					className={`${scrollState.scrollY > 400 && 'lg:scale-100 lg:rotate-0'} lg:scale-0 lg:rotate-45 transition duration-100 ease-in-out object-contain w-12 h-12 bg-blue-500 rounded-full`}
+					/>
+				</Link>
+				<Link	className={`${montserrat.className} tracking-wide no-underline uppercase font-extrabold  text-white hidden md:block text-2xl`} href="/">
+					{" "}
+					Prompt Nation{" "}
+				</Link>
 				</div>
-				<div className='flex flex-row items-center '>
-					<NavMenu routes={routes} providers={providers} session={session}/>
-				</div>
+				<NavMenu routes={routes} providers={providers} session={session}/>
 			</nav>
 		</div>
 	);

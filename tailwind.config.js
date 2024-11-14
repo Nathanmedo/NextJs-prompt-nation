@@ -10,8 +10,11 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        main: "#F3FF90",
         neonGreen: "#d4ff00",
-        neonInitial: '#2B00FF',
+        neonPrimary: "#9BEC00",
+        neonSecondary: "#06D001",
+        neonTertiary: "#059212",
         darkBg: "#0b1727"
       },
       backgroundImage: {

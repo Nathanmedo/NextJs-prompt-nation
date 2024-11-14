@@ -1,9 +1,62 @@
-import React from 'react'
+import { LoadingText } from "@styles/typeAnimations/Type";
 
-const Profile = () => {
+const Profile = ({type, ProfileData}) => {
+  console.log(ProfileData);
+
   return (
-    <div>This is the profile page</div>
-  )
-}
+    <section className="w-full max-w-4xl mx-auto mt-32 p-8">
+      <div className="flex flex-col items-center">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">{type} Profile</h2>
+        <div className="w-40 h-40 rounded-full overflow-hidden mb-6">
+          <img 
+            src={ProfileData?.image} 
+            alt="profile"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-export default Profile
+        <h1 className="text-4xl font-bold mb-2">
+          {ProfileData?.username || <LoadingText/>}
+        </h1>
+        
+        <p className="text-gray-600 mb-6">
+          {ProfileData?.email || <LoadingText/>}
+        </p>
+        <div className="text-center">
+          <p className="text-2xl font-bold">0</p>
+          <p className="text-gray-600">Prompts</p>
+        </div>
+
+        <div className="flex gap-8 mb-8">
+          <div className="text-center">
+            <p className="text-2xl font-bold">0</p>
+            <p className="text-gray-600">Followers</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold">0</p>
+            <p className="text-gray-600">Following</p>
+          </div>
+        </div>
+
+        <div className="w-full max-w-2xl">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Bio</h2>
+            <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+              {ProfileData?.bio || 'No bio yet'}
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Skills</h2>
+            <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+              {ProfileData?.skills || 'No skills listed'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  )
+};
+
+export default Profile;

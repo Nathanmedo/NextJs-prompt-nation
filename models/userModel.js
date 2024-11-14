@@ -2,10 +2,6 @@ import { Schema, model, models } from "mongoose";
 
 
 const userSchema = new Schema({
-    userId:{
-        type: String,
-        unique: true
-    },
     email: {
         type: String,
         required: [true, 'Email is required!'],
@@ -14,12 +10,22 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: [true, 'Username is required!'],
-        match: [/^[a-zA-Z0-9._-]{8,20}$/,'Username Invalid, It must contain 8-20 alphanumeric letters and be unique!']
+        match: [/^[a-zA-Z0-9]+$/, 'Username must contain only letters and numbers']
+    },
+    password: {
+        type: String,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     },
     image:{
         type: String
     }
-})
+}, {
+    timestamps: true  // This will add createdAt and updatedAt fields
+});
+
 
 const User = models.User || model('User', userSchema);
 

@@ -3,43 +3,38 @@
 import React, { useState } from 'react'
 import Form from '@components/Form'
 import axios, { Axios } from 'axios';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import SessionData from '@app/api/getSession/SessionData';
 
 const CreatePrompt = () => {
-  const { data: session }= useSession();
+  const session = SessionData();
   const router = useRouter();
-  console.log(session?.user._id);
-  console.log(process.env.MONGODB_URI);
-  
 
     const [ submit, setSubmit ] = useState(false);
-    const [error, setError] = useState(null);
+    const [fetchError, setFetchError] = useState(null);
 
     const [ promptPost, setPromptPost ] = useState({
       prompt: '',
       tag: ''
     });
-
-    console.log(promptPost);
     
 
     async function handleCreatePrompt(e){
         e.preventDefault();
-
+        
         try{
-          const response = await axios.post('/api/prompt/new', {...promptPost, creator: session?.user.id});
-          if(!response.ok){
-            throw new Error('Failed to create prompt');
-          }
-          if(response.status === 201){
-            setPromptPost({});
+          if(session?.user?.id){
+            const response = await axios.post('api/prompt/new', {...promptPost, creator: session?.user.id});
+            setPromptPost({
+              prompt: '',
+              tag: ''
+            });
             setSubmit(false);
-            setError(null)
-            router.push('/');
+            setFetchError(null);
           }
+          router.push('/prompts');
         }catch(error){
-          setError(error);
+          setFetchError(error?.response?.statusText);
         }finally{
           setSubmit(false);
         }
@@ -48,7 +43,7 @@ const CreatePrompt = () => {
   return (
     <Form
     type="Create"
-    error={error}
+    fetchError={fetchError}
     submit={submit}
     setSubmit={setSubmit}
     promptPost={promptPost}

@@ -1,8 +1,8 @@
 import NextAuth from 'next-auth/next';
 import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
-import connectToDB from "@utils/database";
 import User from "@models/userModel";
+import connectToDB from '@utils/database';
 
 
 const handler = NextAuth({
@@ -17,7 +17,8 @@ const handler = NextAuth({
         })
     ],
     secret: process.env.NEXTAUTH_SECRET,
-    async session({session}){
+    callbacks:{
+        async session({session}){
 
         //check if the session exists
 
@@ -29,6 +30,7 @@ const handler = NextAuth({
         //convert sessionId to string.
 
         session.user.id = userSession._id.toString();
+        session.provider = "NextAuth"
 
         return session;
 
@@ -36,12 +38,12 @@ const handler = NextAuth({
     async signIn({profile}){
         //connect to database.
         await connectToDB();
-
+        console.log("profile object here", profile);
+        
         //check if user exists
         const userExists = await User.findOne({
             email: profile.email,
-
-        })
+        });
 
         //create user if it doesn't exist
         if(!userExists){
@@ -52,6 +54,7 @@ const handler = NextAuth({
             })
         };
         return true;
+    }
     }
     
 });
