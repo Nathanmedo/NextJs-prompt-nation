@@ -209,7 +209,6 @@ const Nav = () => {
 	useEffect(()=>{
 		async function fetchProviders(){
 			const response = await getProviders();
-			console.log(response);
 			
 			setProviders(response)
 		}
@@ -219,7 +218,6 @@ const Nav = () => {
 		
 	}, [session])
 
-	console.log(providers);
 
 	useEffect(()=>{
 		window.addEventListener('scroll', ()=>{
@@ -243,7 +241,7 @@ const Nav = () => {
 					alt='Prompt Nation Icon'
 					width={25}
 					height={25}
-					className={`${scrollState.scrollY > 400 && 'lg:scale-100 lg:rotate-0'} lg:scale-0 lg:rotate-45 transition duration-100 ease-in-out object-contain w-12 h-12 bg-blue-500 rounded-full`}
+					className={`${scrollState.scrollY > 200 && 'lg:scale-100 lg:rotate-0'} lg:scale-0 lg:rotate-45 transition duration-100 ease-in-out object-contain w-12 h-12 bg-blue-500 rounded-full`}
 					/>
 				</Link>
 				<Link	className={`${montserrat.className} tracking-wide no-underline uppercase font-extrabold  text-white hidden md:block text-2xl`} href="/">

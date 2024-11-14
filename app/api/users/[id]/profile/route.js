@@ -12,7 +12,7 @@ export async function GET(request, {params}){
         await connectToDB();
         //find user 
 
-        const findUser = await Prompt.find({creator: params.id}).populate('creator');
+        const findUser = await User.findOne({_id: params.id});
 
         if(!findUser){
             return NextResponse.json({message: "This user does not exist"});

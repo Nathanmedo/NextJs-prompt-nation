@@ -28,3 +28,15 @@
     background-position: 0% 50%;
   }
 }
+.copyButton:hover::before{
+  content: attr(title);
+  position: absolute;
+  top: -25px;
+  background: #333333;
+  color: white;
+  padding: 4px 10px;
+  right: -50px;
+  font-size: 12px;
+  text-transform: capitalize;
+
+}

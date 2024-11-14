@@ -22,34 +22,34 @@ const Profile = ({type, ProfileData}) => {
         <p className="text-gray-600 mb-6">
           {ProfileData?.email || <LoadingText/>}
         </p>
-        <div className="text-center">
-          <p className="text-2xl font-bold">0</p>
-          <p className="text-gray-600">Prompts</p>
-        </div>
 
         <div className="flex gap-8 mb-8">
-          <div className="text-center">
-            <p className="text-2xl font-bold">0</p>
-            <p className="text-gray-600">Followers</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold">0</p>
-            <p className="text-gray-600">Following</p>
-          </div>
+        <div className="text-center">
+          <p className="text-xl md:text-2xl font-bold">0</p>
+          <p className="text-sm md:text-base text-gray-600">Prompts</p>
+        </div>
+        <div className="text-center">
+          <p className="text-xl md:text-2xl font-bold">0</p>
+          <p className="text-sm md:text-base text-gray-600">Followers</p>
+        </div>
+        <div className="text-center">
+          <p className="text-xl md:text-2xl font-bold">0</p>
+          <p className="text-sm md:text-base text-gray-600">Following</p>
+        </div>
         </div>
 
         <div className="w-full max-w-2xl">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">Bio</h2>
             <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
-              {ProfileData?.bio || 'No bio yet'}
+              {ProfileData?.bio || 'No bio yet...'}
             </p>
           </div>
 
           <div>
             <h2 className="text-xl font-semibold mb-2">Skills</h2>
             <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
-              {ProfileData?.skills || 'No skills listed'}
+              {ProfileData?.skills || 'No skills listed...'}
             </p>
           </div>
         </div>

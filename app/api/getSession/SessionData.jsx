@@ -28,10 +28,9 @@ const SessionData = () => {
 		fetchSession();
 	}, [nextAuthSession, token]);
 
-    console.log(session);
     
 
   return session;
 }
 
-export default SessionData
+export default SessionData;

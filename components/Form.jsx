@@ -15,7 +15,7 @@ const Form = ({
   return (
     <section className='mt-32 h-screen lg:w-[50vw] w-screen box-border'>
       <div className='mx-4 lg:mx-10'>
-        <h1 className='text-3xl lg:text-5xl'> {type} Post</h1>
+        <h1 className='text-3xl lg:text-5xl'> {type} Prompt</h1>
       <p className='mt-5 lg:text-lg text-gray-600 text-md'>
         {type} and share amazing prompts with the world, and let your imagination run wild with any AI-powered platform. 
         This platform helps you discover, create, and share creative AI prompts that can enhance your AI interactions.
