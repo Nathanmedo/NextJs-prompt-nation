@@ -31,12 +31,24 @@ const MyProfile = () => {
 
     console.log(ProfileData);
 
+    const handleDelete = async () => {
+
+
+    }
+
+    const handleEdit = async () =>{
+
+    }
+
   return (
     <>
     <Toaster />
     <Profile 
     type='My'
     ProfileData={ProfileData}
+    isCurrentUser = {true}
+    handleDelete
+    handleEdit
     />
     </>
   )

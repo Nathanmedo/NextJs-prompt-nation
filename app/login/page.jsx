@@ -13,6 +13,12 @@ import { Toaster, toast } from "react-hot-toast";
 import { WelcomeText } from "@styles/typeAnimations/Type";
 
 
+export const metadata = {
+	title: 'Log in',
+	description: 'login or signup for an account!'
+}
+
+
 const SocialLoginButton = () => (
 	<Fragment>
 		<button 
@@ -91,7 +97,7 @@ const SignUpForm = () => {
 		try {
 			const response = await axios.post('/api/users/signup', signUpInfo);
 			setSignUpResponse(response.message);
-			toast.success(response.data.data);
+			toast.success(response.data.message);
 			setSignUpInfo({
 				username: '',
 				email: '',

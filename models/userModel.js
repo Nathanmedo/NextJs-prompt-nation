@@ -21,11 +21,38 @@ const userSchema = new Schema({
     },
     image:{
         type: String
+    },
+    following:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    followers:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     timestamps: true  // This will add createdAt and updatedAt fields
 });
 
+//create a method for following users
+userSchema.methods.follow = async function (userID){
+    if(!this.following.includes(userID)){
+        this.following.push(userID);
+    }
+    await User.findByIdAndUpdate(userID, {
+        $push: { followers: this._id}
+    })
+};
+
+//create a method for unfollowing
+userSchema.methods.unfollow = async function (userID){
+    if(this.following.includes(userID)){
+        this.following.pull(userID);
+    }
+    await User.findByIdAndUpdate(userID, {
+        $pull: { followers : this._id }
+    })
+}
 
 const User = models.User || model('User', userSchema);
 

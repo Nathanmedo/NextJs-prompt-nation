@@ -1,8 +1,11 @@
 import { LoadingText } from "@styles/typeAnimations/Type";
+import { usePathname } from "next/navigation";
 
-const Profile = ({type, ProfileData}) => {
+const Profile = ({type, ProfileData, isCurrentUser}) => {
   console.log(ProfileData);
 
+
+  const pathName = usePathname();
   return (
     <section className="w-full max-w-4xl mx-auto mt-32 p-8">
       <div className="flex flex-col items-center">
@@ -37,6 +40,18 @@ const Profile = ({type, ProfileData}) => {
           <p className="text-sm md:text-base text-gray-600">Following</p>
         </div>
         </div>
+        {isCurrentUser ? (
+          <button className="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded">
+            Edit Profile
+          </button>
+        ) : (
+          <button
+          onClick={handleFollowUser} 
+          className="bg-neonPrimary hover:bg-neonSecondary text-white font-bold py-2 px-4 rounded">
+            Follow
+          </button>
+        )}
+
 
         <div className="w-full max-w-2xl">
           <div className="mb-6">

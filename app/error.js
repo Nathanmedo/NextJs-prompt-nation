@@ -12,7 +12,7 @@ const Error = ({ error, reset }) => {
       <div className="flex gap-4">
         <button
           onClick={reset}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-3 bg-neonSecondary text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Try again
         </button>

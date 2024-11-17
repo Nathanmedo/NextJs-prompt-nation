@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export async function GET(request, {params}){
 
     try{
-        console.log(params);
+        console.log(params.id);
         
         await connectToDB();
         //find user 

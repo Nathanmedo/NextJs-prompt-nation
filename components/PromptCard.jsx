@@ -4,9 +4,11 @@ import React, { useState } from 'react'
 import Image from 'next/image';
 import { AiOutlineCopy, AiOutlineCheck } from 'react-icons/ai';
 import FullPrompt from './Fullprompt';
+import Link from 'next/link'
 
 const PromptCard = ({prompt, handleTagClick}) => {
-
+  console.log(prompt);
+  
   const [copied, setCopied] = useState(false);
   const [displayFullPrompt, setDisplayFullPrompt] = useState({});
 
@@ -32,19 +34,28 @@ const PromptCard = ({prompt, handleTagClick}) => {
       <div className='flex justify-between items-start gap-5'>
         <div className='flex justify-between items-center w-full'>
           <div className='flex-1 flex justify-start items-center gap-3 cursor-pointer'>
-            <Image
-              src={prompt.creator?.image || '/assets/delete-user-icon.png'}
-              alt={prompt.creator ? 'user_image' : 'deleted_account'}
-              width={40}
-              height={40}
-              className='rounded-full object-contain bg-gray-500'
-            />
+            <Link
+            href={`/users/profile/${prompt?.creator?._id}`}
+            >
+              <Image
+                src={prompt.creator?.image || '/assets/delete-user-icon.png'}
+                alt={prompt.creator ? 'user_image' : 'deleted_account'}
+                width={40}
+                height={40}
+                className='rounded-full object-contain bg-gray-500'
+              />
+            </Link>
             <div className='flex flex-col'>
-              <div className='flex items-center justify-between'>
-                <h3 className='font-satoshi font-semibold text-gray-900'>
-                  {prompt.creator?.username || 'Deleted User'}
-                </h3>
-              </div>
+              <Link
+              href={`/users/profile/${prompt.creator?._id}`}
+              >
+                <div
+                className='flex items-center justify-between'>
+                  <h3 className='font-satoshi font-semibold text-gray-900'>
+                    {prompt.creator?.username || 'Deleted User'}
+                  </h3>
+                </div>
+              </Link>
               <p className='font-inter text-sm text-gray-500'>
                 {prompt.creator?.email || 'Deleted User'}
               </p>
