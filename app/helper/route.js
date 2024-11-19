@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
+import axios from 'axios';
 
 
 export async function GET(request){
@@ -21,3 +22,4 @@ export async function GET(request){
         return NextResponse.json({message: error.message}, {status:500});
     }
 }
+

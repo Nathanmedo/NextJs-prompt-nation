@@ -1,11 +1,14 @@
 import { LoadingText } from "@styles/typeAnimations/Type";
-import { usePathname } from "next/navigation";
-
-const Profile = ({type, ProfileData, isCurrentUser}) => {
-  console.log(ProfileData);
+import { toast, Toaster } from 'react-hot-toast'
+import { handleFollowUser } from "@app/api/helperFunctions/Helper";
 
 
-  const pathName = usePathname();
+const Profile = ({type, ProfileData, isCurrentUser, isFollowing, currentId}) => {
+
+  console.log(ProfileData, currentId);
+  
+  
+
   return (
     <section className="w-full max-w-4xl mx-auto mt-32 p-8">
       <div className="flex flex-col items-center">
@@ -40,16 +43,27 @@ const Profile = ({type, ProfileData, isCurrentUser}) => {
           <p className="text-sm md:text-base text-gray-600">Following</p>
         </div>
         </div>
-        {isCurrentUser ? (
+        {isCurrentUser && (
           <button className="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded">
             Edit Profile
           </button>
-        ) : (
-          <button
-          onClick={handleFollowUser} 
-          className="bg-neonPrimary hover:bg-neonSecondary text-white font-bold py-2 px-4 rounded">
-            Follow
-          </button>
+        )} 
+        {!isCurrentUser && (
+          <div>
+              { isFollowing ? 
+              (<button
+                onClick={handleUnfollowUser} 
+                className="bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                unfollow
+              </button>):
+              (<button
+              onClick={()=>handleFollowUser(ProfileData._id, currentId)}
+              className="bg-neonPrimary hover:bg-neonSecondary text-white font-bold py-2 px-4 rounded"
+              >
+                follow
+              </button>)
+            }
+          </div>
         )}
 
 

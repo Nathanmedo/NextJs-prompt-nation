@@ -37,7 +37,9 @@ export const POST = async (request) => {
             email:  email,
             username: username.toLowerCase(),
             password: hashedPassword,
-            image: '/assets/user-profile.png'
+            image: '/assets/robotics-icon.svg',
+            followers: [],
+            following: []
         });
 
         return NextResponse.json({message: "User Created Successfully, login to continue"}, {status:201});

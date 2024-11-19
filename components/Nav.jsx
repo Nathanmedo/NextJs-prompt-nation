@@ -116,7 +116,6 @@ const router = useRouter();
 				</Link>
 			</ul> :
 			<Fragment>
-				{ providers && 
 				<Link
 				id='signIn_button'
 				className={`bg-white ${montserrat.className} flex text-darkBg py-2 gap-1 items-center justify-center w-[100px]`}
@@ -128,7 +127,6 @@ const router = useRouter();
 					signIn
 					<FaArrowRight className='text-[16px]'/>
 				</Link>
-			}
 			</Fragment>
 }
 		{/*mobile navigation */}
@@ -161,14 +159,13 @@ const router = useRouter();
 						</Link>
 					</li>
 				))}
-				<Link
-				href={'/login'}
+				<button
 				onClick={()=>{setToggle(prev => !prev),
 					handleLogOut()
 				}}
 				className='rounded-sm mx-4 py-3 w-[100px] border-2 flex justify-center items-center border-black hover:bg-white hover:border-black hover:text-black transition text-white bg-black'>
 				SignOut
-				</Link>
+				</button>
 				</ul>
 				}
 			</button>
@@ -206,17 +203,6 @@ const Nav = () => {
 		];
 	}
 
-	useEffect(()=>{
-		async function fetchProviders(){
-			const response = await getProviders();
-			
-			setProviders(response)
-		}
-
-		fetchProviders();
-
-		
-	}, [session])
 
 
 	useEffect(()=>{

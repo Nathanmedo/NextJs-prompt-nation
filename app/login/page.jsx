@@ -13,11 +13,6 @@ import { Toaster, toast } from "react-hot-toast";
 import { WelcomeText } from "@styles/typeAnimations/Type";
 
 
-export const metadata = {
-	title: 'Log in',
-	description: 'login or signup for an account!'
-}
-
 
 const SocialLoginButton = () => (
 	<Fragment>
@@ -165,7 +160,7 @@ const SignUpForm = () => {
 				disabled={submit}
 				className="w-full bg-blue-600 text-white py-3 px-6 rounded"
 			>
-				Sign Up
+				{submit ? <span className="flex items-center justify-center gap-1 w-full"><RingLoader color="#808080" size={20} /> Creating Account</span> : <span className="flex justify-center w-full">Sign Up</span>}
 			</button>
 			{validated.message && <p className={`mt-2 px-4 py-2 min-h-[48px] bg-darkBg rounded-md outline outline-offset-[-4px] outline-2 ${validated.success ? 'outline-green-500 text-neonSecondary' : 'outline-red-500 text-red-500'}`}>{validated.message}</p>}
 			
@@ -200,7 +195,7 @@ const SignInForm = () => {
 		const response = await axios.post('/api/users/signin', loginInfo);
 		
 		setLoginResponse(response.message);
-		toast.success(response.message);
+		toast(response.data.message);
 		setLoginInfo({
 			emailOrUsername: '',
 			password: '',
@@ -209,7 +204,7 @@ const SignInForm = () => {
 		setFetchError(null)
 		}catch(error){
 			setFetchError(error.message);
-			toast.error(error.message);
+			toast(error.response.data.message);
 		}finally{
 			setSubmit(false)
 		}

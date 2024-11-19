@@ -22,14 +22,14 @@ const userSchema = new Schema({
     image:{
         type: String
     },
-    following:{
+    following:[{
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
-    followers:{
+    }],
+    followers:[{
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    }] //make sure the schema field is set to a type of array with []
 }, {
     timestamps: true  // This will add createdAt and updatedAt fields
 });

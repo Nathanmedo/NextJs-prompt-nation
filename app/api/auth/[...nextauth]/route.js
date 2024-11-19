@@ -51,6 +51,8 @@ const handler = NextAuth({
                 email: profile.email,
                 username: profile.name.replace(" ", "").toLowerCase(),
                 image: profile.picture,
+                followers: [],
+                following: [],
             })
         };
         return true;

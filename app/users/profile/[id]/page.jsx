@@ -1,37 +1,60 @@
 "use client"
 
 import Profile from '@components/Profile';
-import React, { useEffect, useState} from 'react';
 import axios from 'axios'
 import { Toaster, toast } from 'react-hot-toast'
+import { useEffect, useState } from 'react';
+import SessionData from '@app/api/getSession/SessionData';
+import { handleFollowUser, fetchUserData } from '@app/api/helperFunctions/Helper';
+
 
 const UserPage = ({params}) => {
-const [ userData, setUserData ] = useState({});
 
-useEffect(()=>{
-    async function fetchUserData(){
-        try{
-            const response = await axios.get(`/api/users/${params.id}/profile`);
-            setUserData(response.data.data);
-        }catch(error){
-            toast(error.response.data.message)
-        }
+  const [profileData, setProfileData ]= useState({});
+  const [isFollowing, setIsFollowing ]= useState(null);
+  const session = SessionData();
+
+  console.log(session?.user?.id);
+  
+  useEffect(()=>{
+      //destructure the id route parameter passed.
+    const { id } = params;
+    console.log(id);
+    async function handleProfileLoading(){
+       //get user profile data and return as prop
+    const response =  await fetchUserData(id);
+    setProfileData(response);
+    
+
+    //get the session data
+
+    //confirm if following user already
+    if(session?.user?.id){
+      const isFollowing =  await handleFollowUser(response?._id, session?.user?.id);
+      setIsFollowing(isFollowing);
     }
-    fetchUserData();
-}, [])
+    }
+    handleProfileLoading();
+    }, [session?.user?.id]);
 
-console.log(userData);
+    console.log(profileData);
+    
 
   return (
     <>
     <Toaster />
     <Profile 
-    type={userData.username ?? userData.username}
-    ProfileData={userData}
-    isCurrentUser = {false}
+    type={profileData.username ?? profileData.username}
+    ProfileData={profileData}
+    isCurrentUser={false}
+    isFollowing={isFollowing}
+    currentId = {session?.user?.id}
     />
     </>
   )
 }
+
+
+
 
 export default UserPage;
