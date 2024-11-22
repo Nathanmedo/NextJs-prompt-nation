@@ -5,16 +5,24 @@ import Image from 'next/image';
 import { AiOutlineCopy, AiOutlineCheck } from 'react-icons/ai';
 import FullPrompt from './Fullprompt';
 import Link from 'next/link'
+import axios from 'axios'
+import SessionData from '@app/api/getSession/SessionData';
+import { useRouter } from 'next/navigation';
 
-const PromptCard = ({prompt, handleTagClick}) => {
+const PromptCard = ({prompt, handleTagClick, isCurrentUser, isProfileData}) => {
   console.log(prompt);
   
   const [copied, setCopied] = useState(false);
   const [displayFullPrompt, setDisplayFullPrompt] = useState({});
+  const session = SessionData();
+  const router = useRouter();
+  console.log(session);
+  
+
 
   //handle the copy to clipboard functionality
   const handleCopy = (event) => {
-    event.stopPropagation()
+    event.stopPropagation();
     navigator.clipboard.writeText(prompt.prompt);
     setCopied(true);
     const button = event.currentTarget;
@@ -26,11 +34,21 @@ const PromptCard = ({prompt, handleTagClick}) => {
       setCopied(false);
       button.setAttribute('title', 'Copy');
     }, 3000);
+  };
+
+  //handleEdit function
+  const handleEdit = (promptId) =>{
+    router.push(`/update-prompt?id=${promptId}`)
+  }
+
+  //handleDelete function
+  const handleDelete = async (promptId) =>{
+    await axios.delete(`/api/prompt/${promptId}`)
   }
   
   return (
     <>
-    <div className='flex-1 break-inside-avoid rounded-lg border border-gray-300 bg-white/20 bg-clip-padding p-6 pb-4 backdrop-blur-lg backdrop-filter md:w-[360px] w-full h-fit transition-all duration-200 hover:shadow-lg hover:scale-[1.02]'>
+    <div className='flex-1 break-inside-avoid rounded-lg border border-gray-300 bg-white/20 bg-clip-padding p-6 pb-4 backdrop-filter md:w-[360px] w-full h-fit transition-all duration-200 hover:shadow-lg hover:scale-[1.02]'>
       <div className='flex justify-between items-start gap-5'>
         <div className='flex justify-between items-center w-full'>
           <div className='flex-1 flex justify-start items-center gap-3 cursor-pointer'>
@@ -101,6 +119,22 @@ const PromptCard = ({prompt, handleTagClick}) => {
           </div>
         </div>
       </p>
+    {isCurrentUser && (
+      <div className="flex justify-between items-center mt-4">
+        <button 
+          className="bg-neonSecondary hover:bg-neonTertiary text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleEdit(prompt._id)}
+        >
+          Edit
+        </button>
+        <button 
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleDelete(prompt._id)}
+        >
+          Delete
+        </button>
+      </div>
+    )}
     </div>
       
       {displayFullPrompt.prompt && 

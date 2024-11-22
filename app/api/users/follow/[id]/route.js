@@ -3,6 +3,8 @@ import connectToDB from '@utils/database';
 import { NextResponse } from 'next/server';
 
 
+
+
 export async function POST(request, {params}){
 
     const { userId, currentUserId } = await request.json();
@@ -10,12 +12,14 @@ export async function POST(request, {params}){
     
     try{
         await connectToDB();
-        console.log('successfully connected to db');
         
         
-        //find user by id
+        //find user by id and populate followers and following data
         const user = await User.findById(params.id);
-        console.log('found user data', user);
+        console.log('found user data with followers and following', user);
+
+        //find currentUser 
+        const currentUser = await User.findById(currentUserId);
         
 
         //check if already following user
@@ -25,7 +29,7 @@ export async function POST(request, {params}){
         console.log('confirmation done');
         
         //use the follow method
-        await User.follow(params.id);
+        await currentUser.follow(params.id);
         console.log('follow method used');
         
 

@@ -55,7 +55,6 @@ const router = useRouter();
 		routes[link].isActive = true;
 	}
 
-	console.log(toggle);
 	
 	const handleLogOut = async () =>{
 
