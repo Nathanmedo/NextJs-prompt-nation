@@ -44,7 +44,7 @@ export async function POST(request) {
                 id: userExists._id,
                 email: userExists.email,
                 name: userExists.username,
-                image: userExists.image || '/assets/robotics-icon.png'
+                image: userExists.image || '/assets/user-profile.png'
             }
         }
         console.log('created token data');

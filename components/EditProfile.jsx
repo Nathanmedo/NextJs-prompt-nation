@@ -2,15 +2,28 @@
 
 
 import React, { useState } from 'react'
-import { FaXmark } from 'react-icons/fa6'
+import { FaXmark } from 'react-icons/fa6';
+import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast'
 
 
 const EditProfile = ({ProfileData, setShowEditProfile}) => {
 
     const [ profileChange, setProfileChange ] = useState(ProfileData);
+    const [ submit, setSubmit ] = useState(false);
     console.log(profileChange);
     
-    
+    const handleUpdateProfileDetails = async(id) =>{
+      try{
+        const response = await axios.patch(`http://localhost:3000/api/users`, profileChange);
+        toast(response.data.message)
+      }catch(error){
+        toast(error.response.data.message);
+      }finally{
+        setSubmit(true);
+      }
+    };
+
   return (
     <div className="w-[90%] relative bg-white max-w-4xl mx-auto mt-10 p-8 rounded border border-gray-300 shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-700 mb-4">Edit Profile</h2>
@@ -19,12 +32,12 @@ const EditProfile = ({ProfileData, setShowEditProfile}) => {
       onClick={() => setShowEditProfile(false)}>
         <FaXmark />
     </button>
-      <form>
+      <form onSubmit={(e)=>handleUpdateProfileDetails(profileChange._id)} >
         <div className="mb-4">
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
           {ProfileData.username ? (
             <input type="text" 
-            value={profileChange.username} 
+            value={profileChange.username}
             onChange={(e)=> setProfileChange({...profileChange, username: e.target.value})}
             name="username" 
             id="username" 
@@ -76,10 +89,15 @@ const EditProfile = ({ProfileData, setShowEditProfile}) => {
               placeholder="Enter your skills"></textarea>
           )}
         </div>
-        <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save Changes</button>
+        <button 
+        type="submit"
+        disabled={submit ?? 'true'} 
+        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          Save Changes
+        </button>
       </form>
     </div>
   );
 }
 
-export default EditProfile
+export default EditProfile;

@@ -42,7 +42,7 @@ const MyProfile = () => {
 
   
     const openTabAnimation = (id) => {
-      gsap.fromTo(editProfRef.current, 
+      gsap.fromTo(`#${id}`, 
         { scale: 0, opacity: 0, y: -50 }, // Starting properties
         { 
           scale: 1, 
