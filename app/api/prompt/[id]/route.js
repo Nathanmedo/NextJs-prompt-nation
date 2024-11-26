@@ -3,12 +3,16 @@ import connectToDB from '@utils/database';
 import { NextResponse } from 'next/server';
 
 export async function GET(request, {params}){
+    console.log(await request);
+    
     const { id } = params;
     try{
         await connectToDB();
 
+        console.log(id);
+        
         //find the user prompts
-        const prompt = await Prompt.findById(params._id)
+        const prompt = await Prompt.findById(id)
         console.log('recieved prompt data', prompt);
         
         //if the prompt is not found
@@ -26,19 +30,29 @@ export async function GET(request, {params}){
 }
 
 //PATCH to update the changes made to the prompt
-export async function PATCH(request, {params}){
+export const PATCH = async (req, {params}) => {
 
-    const { updatedPrompt } = request.body
+    const { prompt, tag } = await req.json();
+    console.log(prompt, tag);
+    
+
     const { id } = params;
+    console.log(id);
+    
 
     try{
         await connectToDB();
-
+        console.log('database connected');
+        
+        
         //find prompt and update it 
         const changesMade = await Prompt.findByIdAndUpdate(id, 
-            { $set: updatedPrompt},
+            { $set: {prompt, tag}},
             {new: true, runValidators: true}
         );
+
+        console.log('prompt updated.');
+        
         
         if(!changesMade){
             return NextResponse.json({message: 'Prompt not found'}, {status: 404});

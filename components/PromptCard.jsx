@@ -7,16 +7,29 @@ import FullPrompt from './Fullprompt';
 import Link from 'next/link'
 import axios from 'axios'
 import SessionData from '@app/api/getSession/SessionData';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
-const PromptCard = ({prompt, handleTagClick, isCurrentUser, isProfileData}) => {
+const PromptCard = ({prompt,
+  allPrompts,
+    setPrompts,
+   handleTagClick, 
+   isCurrentUser, 
+   isProfileData, 
+   filterPrompts,
+   setSearchResults, 
+   setSearchText
+  }) => {
   console.log(prompt);
   
+
   const [copied, setCopied] = useState(false);
   const [displayFullPrompt, setDisplayFullPrompt] = useState({});
   const session = SessionData();
   const router = useRouter();
-  console.log(session);
+  const location = usePathname();
+
+
+  console.log(location);
   
 
 
@@ -36,6 +49,17 @@ const PromptCard = ({prompt, handleTagClick, isCurrentUser, isProfileData}) => {
     }, 3000);
   };
 
+  //handle tag clicking
+  let resultTimeout;
+  handleTagClick = (promptTag) => {
+    clearTimeout(resultTimeout);
+      setSearchText(promptTag)
+    resultTimeout= setTimeout(()=>{
+      const searchresult = filterPrompts(promptTag);
+      setSearchResults(searchresult)
+    }, 500)
+  }
+
   //handleEdit function
   const handleEdit = (promptId) =>{
     router.push(`/update-prompt?id=${promptId}`)
@@ -43,7 +67,13 @@ const PromptCard = ({prompt, handleTagClick, isCurrentUser, isProfileData}) => {
 
   //handleDelete function
   const handleDelete = async (promptId) =>{
-    await axios.delete(`/api/prompt/${promptId}`)
+    await axios.delete(`/api/prompt/${promptId}`);
+
+    const updatedPrompts = allPrompts.filter( p => p._id != promptId );
+    console.log(updatedPrompts);
+    
+    setPrompts(updatedPrompts)
+  router.push(location);
   }
   
   return (
@@ -93,7 +123,7 @@ const PromptCard = ({prompt, handleTagClick, isCurrentUser, isProfileData}) => {
          onClick={() => setDisplayFullPrompt(prompt.prompt && prompt)}>
         {prompt.prompt}
       </p>
-      <p className='font-inter text-sm blue_gradient cursor-pointer'
+      <p className='font-inter text-sm text-blue-600 cursor-pointer '
          onClick={() => handleTagClick && handleTagClick(prompt.tag)}>
         <div className="flex justify-between items-center">
           <span>{prompt.tag}</span>

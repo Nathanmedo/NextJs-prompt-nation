@@ -7,7 +7,6 @@ export async function POST(request){
     
     const content = await request.json();
     const { prompt, tag, creator } = content;
-    console.log(prompt, tag, creator);
     
 
     try{

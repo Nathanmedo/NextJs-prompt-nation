@@ -4,23 +4,38 @@
 import React, { useState } from 'react'
 import { FaXmark } from 'react-icons/fa6';
 import axios from 'axios';
-import { toast, Toaster } from 'react-hot-toast'
+import { toast, Toaster } from 'react-hot-toast';
+import { useRouter, usePathname } from 'next/navigation';
 
 
 const EditProfile = ({ProfileData, setShowEditProfile}) => {
 
     const [ profileChange, setProfileChange ] = useState(ProfileData);
     const [ submit, setSubmit ] = useState(false);
+    const router = useRouter();
+    const location = usePathname();
+  console.log(location);
+  
+
     console.log(profileChange);
     
-    const handleUpdateProfileDetails = async(id) =>{
+    const handleUpdateProfileDetails = async(e) =>{
+      e.preventDefault();
       try{
-        const response = await axios.patch(`http://localhost:3000/api/users`, profileChange);
-        toast(response.data.message)
+        const response = await axios.patch('/api/users', { 
+          id: profileChange._id,
+          username: profileChange.username,
+          bio: profileChange.bio || '',
+          skills: profileChange.skills || ''
+        });
+        toast(response.data.message);
+        setSubmit(false);
+        setShowEditProfile(false);
+        router.push('/my-profile')
       }catch(error){
         toast(error.response.data.message);
       }finally{
-        setSubmit(true);
+        setSubmit(false);
       }
     };
 
@@ -32,7 +47,7 @@ const EditProfile = ({ProfileData, setShowEditProfile}) => {
       onClick={() => setShowEditProfile(false)}>
         <FaXmark />
     </button>
-      <form onSubmit={(e)=>handleUpdateProfileDetails(profileChange._id)} >
+      <form onSubmit={handleUpdateProfileDetails} >
         <div className="mb-4">
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
           {ProfileData.username ? (

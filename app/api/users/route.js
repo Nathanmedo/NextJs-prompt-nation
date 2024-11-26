@@ -3,8 +3,10 @@ import User from "@models/userModel";
 import { NextResponse } from "next/server";
 
 //confirm follow
-export async function POST(request, {params}){
-    const { userId, currentId } = request.json();
+export async function POST(request){
+    const { userId, currentId } = await request.json();
+    console.log(userId, currentId);
+    
 
     try{
         await connectToDB();
@@ -14,23 +16,25 @@ export async function POST(request, {params}){
 
         //confirm follow
         if(user.followers.includes(currentId)){
-            return NextResponse.json({message: "Following User Already", isFollowing:true}, {status: 409})
+            return NextResponse.json({message: "Following User Already", isFollowing:true}, {status: 200})
         }
-        return NextResponse.json({message: "Not following user", isFollowing: false}, {status: 409})
+        return NextResponse.json({message: "Not following user", isFollowing: false}, {status: 200})
     }catch(error){
         return NextResponse.json({message: 'failed to confirm'}, {status: 500})
     }
 }
 
-export async function PATCH(request){
-    const { profileChange } = request.json();   
+export async function PATCH(req){
+    const { id, username, bio, skills } = await req.json();   
+    
+    
     try{
         await connectToDB();
 
-        const user = User.findByIdAndUpdate(profileChange._id, 
-        {$set: profileChange},
-        {new: true})
-
+        const user = await User.findByIdAndUpdate(id, 
+        {$set: {username, bio, skills}},
+        {new: true, runValidators: true})
+        console.log('updated sucessfully');
         if(!user){
             return NextResponse.json({message: 'User not found'}, {status: 404});
         }

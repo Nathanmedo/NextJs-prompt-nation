@@ -22,6 +22,12 @@ const userSchema = new Schema({
     image:{
         type: String
     },
+    bio: {
+        type: String
+    },
+    skills: {
+        type: String
+    },
     following:[{
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -52,7 +58,7 @@ userSchema.methods.unfollow = async function (userID){
     await User.findByIdAndUpdate(userID, {
         $pull: { followers : this._id }
     })
-}
+};
 
 const User = models.User || model('User', userSchema);
 

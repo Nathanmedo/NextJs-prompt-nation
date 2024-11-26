@@ -27,7 +27,7 @@ export const fetchUserPrompts = async (id) =>{
 export const handleConfirmFollow = async(userId, currentUserId) =>{
   console.log(userId, currentUserId);
   try{
-    const response = await axios.post('http://localhost:3000/api/users', {userId, currentUserId});
+    const response = await axios.post('http://localhost:3000/api/users', {userId: userId, currentUserId: currentUserId});
     return response.data.isFollowing;
   }catch(error){
     return error.response.data.message;
@@ -49,5 +49,18 @@ export const handleFollowUser = async(userId, currentUserId) =>{
     }
   };
 
+  export const handleUnfollowUser = async(userId, currentUserId) =>{
+    console.log(
+      userId,
+      currentUserId
+    );
+    
+      try{
+        const response = await axios.post(`http://localhost:3000/api/users/unfollow/${userId}`, {userId: userId, currentUserId: currentUserId});
+        return response.data.isFollowing; 
+      }catch(error){
+        return error.response.data.isFollowing;
+      }
+    };
 
   

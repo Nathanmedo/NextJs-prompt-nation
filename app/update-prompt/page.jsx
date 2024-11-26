@@ -6,6 +6,9 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
+
 
 const UpdatePrompt = () => {
     const [submit, setSubmit] = useState(false);
@@ -15,8 +18,16 @@ const UpdatePrompt = () => {
         tag: ''
     });
 
+    const router = useRouter()
+
     //get the id from the querystring.
-    const { id } = useSearchParams();
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id')
+    console.log(searchParams);
+    
+    
+
+    
 
     useEffect(()=>{
         async function fetchPromptData(){
@@ -30,15 +41,20 @@ const UpdatePrompt = () => {
             }
         }
         fetchPromptData();
-    });
+    }, [id]);
+
+    //handle the prompt update
     const handleEditPrompt = async (e) =>{
         e.preventDefault();
         try{
-            const response = await axios.patch(`http://localhost:3000/api/prompt/${id}`, promptPost);
-            console.log(response.data);
-            
+            console.log(promptPost);
+            const response = await axios.patch(`/api/prompt/${id}`, {prompt: promptPost.prompt, tag: promptPost.tag})
+            router.push('/my-profile');
+            toast(response.data.message);
         }catch(error){
             toast(error.response.data.message);
+        }finally{
+            setSubmit(false)
         }
     };
     

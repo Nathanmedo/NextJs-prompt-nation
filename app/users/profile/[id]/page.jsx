@@ -39,8 +39,6 @@ const UserPage = ({params}) => {
     handleProfileLoading();
     }, [session?.user?.id]);
 
-    console.log(prompts);
-    
 
   return (
     <>
@@ -52,7 +50,6 @@ const UserPage = ({params}) => {
     isCurrentUser={false}
     isFollowing={isFollowing}
     currentId = {session?.user?.id}
-    prompts={prompts}
     />
     </>
   )

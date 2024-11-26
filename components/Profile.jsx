@@ -1,6 +1,6 @@
 import { LoadingText } from "@styles/typeAnimations/Type";
 import { toast, Toaster } from 'react-hot-toast'
-import { handleFollowUser } from "@app/api/helperFunctions/Helper";
+import { handleFollowUser, handleUnfollowUser } from "@app/api/helperFunctions/Helper";
 import PromptCard from "./PromptCard";
 import Image from "next/image";
 import { FaPencil } from 'react-icons/fa6'
@@ -15,11 +15,11 @@ const Profile = ({
   setShowEditProfile,
   currentId,
   prompts,
+  setPrompts,
   openTabAnimation
 }) => {
 
   console.log(ProfileData, currentId);
-  
 
   return (
     <>
@@ -33,6 +33,7 @@ const Profile = ({
               width={160}
               height={160}
               objectFit="cover"
+              className="rounded-full"
             />
           <button 
             className="bg-black grid place-items-center rounded-full bg-opacity-75 backdrop-blur-md  text-white font-bold h-[40px] w-[40px] absolute bottom-2 right-2">
@@ -73,28 +74,24 @@ const Profile = ({
           )}
           {!(ProfileData?._id == currentId) && (
             <div>
-                { isFollowing == null ?
-                (<button
-      
-                  className="bg-gray-600 text-white font-bold py-2 px-4 rounded">
-                  Loading...
-                </button>):
-                  isFollowing ?
-                (<button
-                onClick={()=>handleFollowUser(ProfileData._id, currentId)}
-                className="bg-black bg-opacity-50 text-white font-bold py-2 px-4 rounded"
-                >
-                  Unfollow
-                </button>):
-                (
+                { isFollowing === null ? (
                   <button
-                onClick={()=>handleFollowUser(ProfileData._id, currentId)}
-                className=" bg-neonPrimary hover:bg-neonSecondary text-white font-bold py-2 px-4 rounded w-full"
-                >
-                  Follow
-                </button>
-                )
-              }
+                    className="bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                    Loading...
+                  </button>
+                ) : isFollowing === true ? (
+                  <button
+                    onClick={() => handleUnfollowUser(ProfileData._id, currentId)}
+                    className="bg-black bg-opacity-50 text-white font-bold py-2 px-4 rounded">
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleFollowUser(ProfileData._id, currentId)}
+                    className="bg-neonPrimary hover:bg-neonSecondary text-white font-bold py-2 px-4 rounded w-full">
+                    Follow
+                  </button>
+                )}
             </div>
           )}
           <div className="w-full max-w-2xl mt-4">
@@ -117,7 +114,13 @@ const Profile = ({
         <p className="text-sm text-gray-600 mb-2">{desc}</p>
         <div className="flex flex-wrap justify-center gap-4">
           {prompts?.map((prompt) => (
-            <PromptCard key={prompt._id} prompt={prompt} isCurrentUser={isCurrentUser} isProfileData={ProfileData}/>
+            <PromptCard 
+            key={prompt._id} 
+            prompt={prompt} 
+            allPrompts={prompts}
+            setPrompts={setPrompts}
+            isCurrentUser={isCurrentUser} 
+            isProfileData={ProfileData}/>
           ))}
         </div>
         {prompts?.length === 0 && (

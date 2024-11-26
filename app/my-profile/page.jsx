@@ -65,6 +65,7 @@ const MyProfile = () => {
     isCurrentUser = {true}
     setShowEditProfile={setShowEditProfile}
     prompts={prompts}
+    setPrompts={setPrompts}
     openTabAnimation={openTabAnimation}
     />
     {showEditProfile && <div 
